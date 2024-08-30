@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation Tool</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            overflow-x: hidden; /* Loại bỏ thanh cuộn ngang */
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #333, #555);
+            color: white;
+            position: relative; /* Đảm bảo header có vị trí relative để các phần tử con có thể sử dụng z-index */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000; /* Đặt z-index cao để giữ header trên cùng */
+        }
+        header img {
+            width: 150px;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+        header img:hover {
+            transform: scale(1.1);
+        }
+        nav {
+            background: linear-gradient(135deg, #333, #444);
+            color: white;
+            padding: 0;
+            margin: 0;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li {
+            position: relative;
+            transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền */
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            transition: color 0.3s ease; /* Hiệu ứng chuyển màu chữ */
+        }
+        nav ul li a::before {
+            content: url('icon.png'); /* Thay thế bằng URL của biểu tượng */
+            margin-right: 8px;
+        }
+        nav ul li a::after {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 0;
+            bottom: 2px; /* Đặt gạch chân sát chữ */
+            width: 0;
+            height: 2px; /* Độ dày của gạch chân */
+            background-color: #ffd700; /* Màu của gạch chân */
+            transition: width 0.3s ease; /* Hiệu ứng chuyển đổi của gạch chân */
+        }
+        nav ul li a:hover::after, nav ul li a.active::after {
+            width: 100%; /* Đưa gạch chân đầy đủ chiều rộng của liên kết khi rê chuột hoặc chọn */
+        }
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background: linear-gradient(135deg, #444, #555);
+    border-radius: 5px;
+    top: 100%;
+    left: 0;
+    min-width: 150px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1001;
+}
+
+.dropdown-menu li {
+    white-space: nowrap;
+}
+
+.dropdown-menu li a {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    display: block;
+}
+
+.dropdown-menu li a:hover {
+    background-color: #555;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+        .container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            flex-wrap: wrap;
+            position: relative;
+            width: 100vw; /* Đặt width là 100% của viewport */
+            box-sizing: border-box; /* Bao gồm padding và border trong kích thước tổng thể */
+        }
+        .content {
+            width: 100%;
+            max-width: 1200px; /* Điều chỉnh chiều rộng tối đa */
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left; /* Căn nội dung chữ bên trái */
+        }
+        .content img {
+            display: block;
+            margin: 0 auto; /* Đưa hình ảnh vào giữa */
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .content img:hover {
+            transform: scale(1.05);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .modal.active {
+            display: flex;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: linear-gradient(135deg, #333, #444);
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            margin-top: 20px;
+        }
+        input[readonly] {
+            cursor: pointer; /* Thay đổi con trỏ chuột khi rê qua các ô nhập liệu */
+        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 22px 00;
+    font-size: 16px;
+    text-align: left;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden; /* Để bo tròn các góc bảng */
+}
+
+th, td {
+    padding: 12px 15px;
+    border: 1px solid #dddddd; /* Thay đổi từ border-bottom thành border cho cả 4 cạnh */
+}
+
+/* Đảm bảo nội dung trong cột đầu tiên không xuống dòng */
+table td:nth-child(1), 
+table th:nth-child(1) {
+    white-space: nowrap;
+}
+
+/* Đảm bảo nội dung trong cột thứ hai không xuống dòng */
+table td:nth-child(2), 
+table th:nth-child(2) {
+    white-space: nowrap;
+}
+
+th {
+    background-color: #077bf7;
+    color: white;
+    font-weight: bold;
+    position: sticky;
+    top: 0; /* Giữ lại dòng tiêu đề khi cuộn */
+    z-index: 1;
+}
+
+tr:nth-child(even) {
+    background-color: #f4f4f9;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+/* Chỉ căn giữa tiêu đề của cột thứ 1 */
+table th:nth-child(1) {
+    text-align: center;
+}
+/* Chỉ căn giữa tiêu đề của cột thứ 2 */
+table th:nth-child(2) {
+    text-align: center;
+}
+/* Chỉ căn giữa tiêu đề của cột thứ 3 */
+table th:nth-child(3) {
+    text-align: center;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <img src="bg.png" alt="Logo">
+    </header>
+<nav>
+        <ul>
+            <li><a href="0rion24kk.github.io/nth/">Trang Chủ</a></li>
+	    <li class="dropdown">
+                <a href="#">Nội Công</a>
+                <ul class="dropdown-menu">
+                    <li><a href="index.html">Dịch & So Sánh</a></li>
+		    <li><a href="chi_tiet_noi_cong.html">Chi Tiết Nội Công</a></li>
+		    <li><a href="ynghiacthuoctinh.html">Ý Nghĩa Thuộc Tính</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Nội Công Giang Hồ</a></li>
+            <li><a href="#">Tuyệt Kỹ</a></li>
+            <li><a href="#">Kỹ Năng Giang Hồ</a></li>
+	    <li class="dropdown">
+                <a href="#">Hướng Dẫn</a>
+                <ul class="dropdown-menu">
+                    <li><a href="tri_ky.html">Nhiệm Vụ Tri Kỷ</a></li>
+		    <li><a href="#">Nhiệm Vụ Tình Duyên</a></li>
+		    <li><a href="#">Thử Thách Danh Dự</a></li>
+		    <li><a href="tao_tai_khoan.html">Tạo Tài Khoản</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Thời Trang Free</a></li>
+            <li><a href="#">Liên Hệ</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="table-wrapper">
+            <table id="data-table">
+                <thead>
+                    <tr>
+                        <th>Hình Ảnh</th>
+                        <th>Tên</th>
+                        <th>Chi Tiết</th>
+                    </tr>
+                </thead>
+<tbody>
+    <tr><td>气海</td><td>Khí Hải</td><td>Dành cho phái nội công. Tăng các chỉ số Tấn công, Phá phòng, Mệnh trung.</td></tr>
+
+    <tr><td>根骨</td><td>Căn Cốt</td><td>Tăng giới hạn máu, tốc độ hồi phục.</td></tr>
+
+    <tr><td>身法</td><td>Thân Pháp</td><td>Tăng Mệnh trung, Hội tâm, Kháng nội ngoại công.</td></tr>
+
+    <tr><td>力量</td><td>Sức Mạnh</td><td>Dành cho phái ngoại công. Tăng các chỉ số Tấn công, Phá phòng, Mệnh trung.</td></tr>
+
+    <tr><td>耐力</td><td>Nại Lực</td><td>Tăng phòng ngự nội ngoại công, giảm sát thương bạo kích nội ngoại công.</td></tr>
+
+    <tr><td>攻击</td><td>Tấn công</td><td>Tăng điểm Tấn công cho nhân vật.</td></tr>
+
+    <tr><td>会心</td><td>Hội tâm</td><td>Tăng Tỉ lệ bạo kích.</td></tr>
+
+    <tr><td>破防</td><td>Phá phòng</td><td>Bỏ qua Phòng thủ của địch.</td></tr>
+
+    <tr><td>命中</td><td>Mệnh trung</td><td>Tăng Tỉ lệ chính xác, Tỉ lệ né tránh.</td></tr>
+
+    <tr><td>全元素攻击</td><td>Công kích nguyên tố</td><td>Các sát thương nguyên tố: Băng, Thổ, Hỏa, Phong... của chiêu thức.</td></tr>
+
+    <tr><td>首领克制</td><td>Khắc chế thủ lĩnh</td><td>Tăng sát thương vào boss.</td></tr>
+
+    <tr><td>最大攻击</td><td>Tấn công tối đa</td><td>Tăng giới hạn sát thương đòn đánh lớn nhất.</td></tr>
+
+    <tr><td>最小攻击</td><td>Tấn công tối thiểu</td><td>Tăng giới hạn sát thương đòn đánh nhỏ nhất.</td></tr>
+
+    <tr><td>格挡</td><td>Đỡ đòn</td><td>Tăng tỷ lệ đỡ đòn, giảm sát thương phải chịu từ kẻ địch.</td></tr>
+
+    <tr><td>外功格挡</td><td>Đỡ đòn Ngoại công</td><td>Tăng tỷ lệ nhân vật chặn đòn tấn công ngoại công. Sau khi chặn thành công, nhân vật chỉ nhận 50% sát thương. Sát thương này sẽ không kích hoạt bạo kích.</td></tr>
+
+    <tr><td>内功格挡</td><td>Đỡ đòn Nội công</td><td>Tăng tỷ lệ nhân vật chặn đòn tấn công nội công. Sau khi chặn thành công, nhân vật chỉ nhận 50% sát thương. Sát thương này sẽ không kích hoạt bạo kích.</td></tr>
+
+    <tr><td>防御</td><td>Phòng thủ</td><td>Giảm trực tiếp sát thương phải chịu từ kẻ địch.</td></tr>
+
+    <tr><td>破盾</td><td>Phá Thuẫn</td><td>Tăng bỏ qua phòng thủ của đối phương, tăng sát thương trực tiếp tới kẻ địch.</td></tr>
+
+    <tr><td>风攻击</td><td>Sát thương Phong</td><td>Tăng sát thương Phong của kĩ năng.</td></tr>
+
+    <tr><td>火攻击</td><td>Sát thương Hỏa</td><td>Tăng sát thương Hỏa của kĩ năng.</td></tr>
+
+    <tr><td>冰攻击</td><td>Sát thương Băng</td><td>Tăng sát thương Băng của kĩ năng.</td></tr>
+
+    <tr><td>雷攻击</td><td>Sát thương Lôi</td><td>Tăng sát thương Lôi của kĩ năng.</td></tr>
+
+    <tr><td>气盾</td><td>Khí thuẫn</td><td>Khiên chắn nội ngoại công giảm sát thương phải chịu, bị ảnh hưởng từ phá thuẫn.</td></tr>
+
+    <tr><td>外功气盾</td><td>Khí thuẫn ngoại công</td><td>Khiên chắn Ngoại công giảm sát thương phải chịu, bị ảnh hưởng từ phá thuẫn.</td></tr>
+
+    <tr><td>内功气盾</td><td>Khí thuẫn Nội công</td><td>Khiên chắn Nội công giảm sát thương phải chịu, bị ảnh hưởng từ phá thuẫn.</td></tr>
+
+    <tr><td>气血上限</td><td>Giới hạn khí huyết</td><td>Tăng giới hạn máu.</td></tr>
+
+    <tr><td>首领抵御</td><td>Thủ Lĩnh Phòng Ngự</td><td>Giảm sát thương từ Boss.</td></tr>
+
+    <tr><td>建筑抵御</td><td>Kiến Trúc Phòng Ngự</td><td>Giảm sát thương từ các công trình: Chòi, tháp, đám cháy... (War bang)</td></tr>
+
+    <tr><td>会心伤害</td><td>Sát thương bạo kích</td><td>Tăng sát thương của các đòn bạo kích.</td></tr>
+
+    <tr><td>神相克制</td><td>Khắc Chế Thần Tương</td><td>Tăng sát thương tới môn phái Thần Tương.</td></tr>
+
+    <tr><td>神相抵御</td><td>Phòng ngự Thần Tương</td><td>Giảm sát thương từ môn phái Thần Tương.</td></tr>
+
+    <tr><td>碎梦克制</td><td>Khắc chế Toái Mộng</td><td>Tăng sát thương tới môn phái Toái Mộng.</td></tr>
+
+    <tr><td>碎梦抵御</td><td>Phòng ngự Toái Mộng</td><td>Giảm sát thương từ môn Toái Mộng.</td></tr>
+
+    <tr><td>素问克制</td><td>Khắc chế Tố Vấn</td><td>Tăng sát thương tới môn phái Tố Vấn.</td></tr>
+
+    <tr><td>素问抵御</td><td>Phòng ngự Tố Vấn</td><td>Giảm sát thương từ môn Tố Vấn.</td></tr>
+
+    <tr><td>血河克制</td><td>Khắc Chế Huyết Hà</td><td>Tăng sát thương tới môn phái Huyết Hà.</td></tr>
+
+    <tr><td>血河抵御</td><td>Phòng ngự Huyết Hà</td><td>Giảm sát thương từ môn Huyết Hà.</td></tr>
+
+    <tr><td>铁衣克制</td><td>Khắc Chế Thiết Y</td><td>Tăng sát thương tới môn phái Thiết Y.</td></tr>
+
+    <tr><td>铁衣抵御</td><td>Phòng ngự Thiết Y</td><td>Giảm sát thương từ môn Thiết Y.</td></tr>
+
+    <tr><td>九灵克制</td><td>Khắc chế Cửu Linh</td><td>Tăng sát thương tới môn phái Cửu Linh.</td></tr>
+
+    <tr><td>九灵抵御</td><td>Phòng ngự Cửu Linh</td><td>Giảm sát thương từ môn phái Cửu Linh.</td></tr>
+
+    <tr><td>龙吟克制</td><td>Khắc chế Long Ngâm</td><td>Tăng sát thương tới môn phái Long Ngâm.</td></tr>
+
+    <tr><td>龙吟抵御</td><td>Phòng ngự Long Ngâm</td><td>Giảm sát thương từ môn phái Long Ngâm.</td></tr>
+
+    <tr><td>玄机克制</td><td>Khắc chế Huyền Cơ</td><td>Tăng sát thương tới môn phái Huyền Cơ.</td></tr>
+
+    <tr><td>玄机抵御</td><td>Phòng ngự Huyền Cơ</td><td>Giảm sát thương từ môn phái Huyền Cơ.</td></tr>
+
+    <tr><td>流派抵御</td><td>Phòng Ngự Môn Phái</td><td>Giảm sát thương từ các môn phái khác.</td></tr>
+
+    <tr><td>轻功</td><td>Khinh Công</td><td></td></tr>
+
+    <tr><td>移动速度</td><td>Tốc độ di chuyển</td><td></td></tr>
+
+    <tr><td>幸运</td><td>Hạnh Vận</td><td>Chỉ số may mắn.</td></tr>
+
+    <tr><td>控制增强</td><td>Khống chế tăng cường</td><td>Gia tăng các hiệu ứng của kĩ năng: làm choáng, làm chậm, văng, ngã...</td></tr>
+
+    <tr><td>技能增强</td><td>Kĩ năng nâng cao</td><td>Giảm sát thương từ các môn phái khác.</td></tr>
+
+    <tr><td>单体技能增强</td><td>Đơn thể kĩ năng tăng cường</td><td>Tăng sát thương kĩ năng 1 mục tiêu.</td></tr>
+
+    <tr><td>群体技能增强</td><td>Quần thể kĩ năng tăng cường</td><td>Tăng sát thương kĩ năng diện rộng đa mục tiêu.</td></tr>
+
+    <tr><td>爆发技能增强</td><td>Bạo phát kĩ năng tăng cường</td><td>Tăng sát thương kĩ năng bạo kích.</td></tr>
+
+    <tr><td>持续技能增强</td><td>Trì tục kĩ năng tăng cường</td><td>Tăng sát thương kĩ năng duy trì liên tục (cháy nổ, sét giật...).</td></tr>
+
+    <tr><td>会心抗性</td><td>Giảm tỉ lệ bạo kích</td><td>Giảm khả năng bị dính đòn bạo kích.</td></tr>
+
+    <tr><td>会心防御</td><td>Giảm sát thương bạo kích</td><td>Giảm trực tiếp sát thương bạo kích bị nhận.</td></tr>
+
+    <tr><td>内功防御</td><td>Nội Công Phòng Ngự</td><td>Giảm trực tiếp sát thương từ môn phái nội công.</td></tr>
+
+    <tr><td>外功防御</td><td>Ngoại Công Phòng Ngự</td><td>Giảm trực tiếp sát thương từ môn phái ngoại công.</td></tr>
+
+    <tr><td>抗外功会心</td><td>Giảm tỉ lệ bạo kích ngoại công</td><td>Giảm tỉ lệ bạo kích từ địch thủ phái ngoại công.</td></tr>
+
+    <tr><td>抗内功会心</td><td>Giảm tỉ lệ bạo kích nội công</td><td>Giảm tỉ lệ bạo kích từ địch thủ phái nội công.</td></tr>
+
+    <tr><td>全元素抗性</td><td>Kháng tất cả nguyên tố</td><td></td></tr>
+
+    <tr><td>内功破防</td><td>Phá phòng Nội công</td><td>Khiến nhân vật bỏ qua khả năng phòng thủ nội công của mục tiêu.</td></tr>
+
+    <tr><td>外功破防</td><td>Phá phòng Ngoại công</td><td>Khiến nhân vật bỏ qua khả năng phòng thủ ngoại công của mục tiêu.</td></tr>
+
+    <tr><td>元素·滴仙岛</td><td>Nguyên Tố · Trích Tiên Đảo</td><td>Tăng sức tấn công của ba nguyên tố kim, sấm và mộc. Áp dụng cho Toái Mộng và Long Ngâm.</td></tr>
+
+    <tr><td>元素·碧血营</td><td>Nguyên Tố · Bích Huyết Doanh</td><td>Áp dụng cho Thiết Y và Huyết Hà.</td></tr>
+
+    <tr><td>外功攻击</td><td>Tấn Công Ngoại Công</td><td>Tăng cường sát thương ngoại công cơ bản của nhân vật (Hệ số kỹ năng càng cao, sát thương thực tế càng lớn).</td></tr>
+
+    <tr><td>内功攻击</td><td>Tấn Công Nội Công</td><td>Tăng cường sát thương nội công cơ bản của nhân vật (Hệ số kỹ năng càng cao, sát thương thực tế càng lớn).</td></tr>
+
+    <tr><td>特性效果等级</td><td>Linh Vận</td><td>Tăng 1 cấp nội công.</td></tr>
+
+</tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        © 2024 Design by Mèo.Đi.Bụi. All rights reserved.
+    </footer>
+
+</body>
+</html>

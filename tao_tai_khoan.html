@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation Tool</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            overflow-x: hidden; /* Loại bỏ thanh cuộn ngang */
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #333, #555);
+            color: white;
+            position: relative; /* Đảm bảo header có vị trí relative để các phần tử con có thể sử dụng z-index */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000; /* Đặt z-index cao để giữ header trên cùng */
+        }
+        header img {
+            width: 150px;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+        header img:hover {
+            transform: scale(1.1);
+        }
+        nav {
+            background: linear-gradient(135deg, #333, #444);
+            color: white;
+            padding: 0;
+            margin: 0;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li {
+            position: relative;
+            transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền */
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            transition: color 0.3s ease; /* Hiệu ứng chuyển màu chữ */
+        }
+        nav ul li a::before {
+            content: url('icon.png'); /* Thay thế bằng URL của biểu tượng */
+            margin-right: 8px;
+        }
+        nav ul li a::after {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 0;
+            bottom: 2px; /* Đặt gạch chân sát chữ */
+            width: 0;
+            height: 2px; /* Độ dày của gạch chân */
+            background-color: #ffd700; /* Màu của gạch chân */
+            transition: width 0.3s ease; /* Hiệu ứng chuyển đổi của gạch chân */
+        }
+        nav ul li a:hover::after, nav ul li a.active::after {
+            width: 100%; /* Đưa gạch chân đầy đủ chiều rộng của liên kết khi rê chuột hoặc chọn */
+        }
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background: linear-gradient(135deg, #444, #555);
+    border-radius: 5px;
+    top: 100%;
+    left: 0;
+    min-width: 150px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1001;
+}
+
+.dropdown-menu li {
+    white-space: nowrap;
+}
+
+.dropdown-menu li a {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    display: block;
+}
+
+.dropdown-menu li a:hover {
+    background-color: #555;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+        .container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            flex-wrap: wrap;
+            position: relative;
+            width: 100vw; /* Đặt width là 100% của viewport */
+            box-sizing: border-box; /* Bao gồm padding và border trong kích thước tổng thể */
+        }
+        .content {
+            width: 100%;
+            max-width: 1200px; /* Điều chỉnh chiều rộng tối đa */
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left; /* Căn nội dung chữ bên trái */
+        }
+        .content img {
+            display: block;
+            margin: 0 auto; /* Đưa hình ảnh vào giữa */
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .content img:hover {
+            transform: scale(1.05);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .modal.active {
+            display: flex;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: linear-gradient(135deg, #333, #444);
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            margin-top: 20px;
+        }
+        input[readonly] {
+            cursor: pointer; /* Thay đổi con trỏ chuột khi rê qua các ô nhập liệu */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="bg.png" alt="Logo">
+    </header>
+<nav>
+        <ul>
+            <li><a href="0rion24kk.github.io/nth/">Trang Chủ</a></li>
+	    <li class="dropdown">
+                <a href="#">Nội Công</a>
+                <ul class="dropdown-menu">
+                    <li><a href="index.html">Dịch & So Sánh</a></li>
+		    <li><a href="chi_tiet_noi_cong.html">Chi Tiết Nội Công</a></li>
+		    <li><a href="ynghiacthuoctinh.html">Chi Tiết Nội Công</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Nội Công Giang Hồ</a></li>
+            <li><a href="#">Tuyệt Kỹ</a></li>
+            <li><a href="#">Kỹ Năng Giang Hồ</a></li>
+	    <li class="dropdown">
+                <a href="#">Hướng Dẫn</a>
+                <ul class="dropdown-menu">
+                    <li><a href="tri_ky.html">Nhiệm Vụ Tri Kỷ</a></li>
+		    <li><a href="#">Nhiệm Vụ Tình Duyên</a></li>
+		    <li><a href="#">Thử Thách Danh Dự</a></li>
+		    <li><a href="tao_tai_khoan.html">Tạo Tài Khoản</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Thời Trang Free</a></li>
+            <li><a href="#">Liên Hệ</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="container">
+            <div class="content">
+		<h2 style="text-align: center;">Hướng Dẫn Tạo Tài Khoản</h2>
+                <p>[HƯỚNG DẪN] TẢI GAME VÀ ĐĂNG KÝ TÀI KHOẢN NE BẰNG CCCD + SDT VN VIỆT NAM</p>
+                <p>1. Tải game:
+	<p><a href="https://h.163.com/index.html">Trang chủ NTH mobile Trung Quốc</a></p>
+	<p><a href="https://adl.netease.com/d/g/nshm/c/gw?type=android">Link tải android - file apk</a>.</p>
+	<p><a href="https://apps.apple.com/cn/app/逆水寒/id1541570980?ign-itscg=30200&ign-itsct=apps_box_link">Link tải trên IOS</a>.</p>
+	<br>Khi nhấn vào link, nếu vùng của thiết bị của bạn không cho tải game về. Thì các bạn phải đổi vùng thiết bị sang Trung Quốc. <a href="https://mytour.vn/vi/blog/bai-viet/huong-dan-chuyen-doi-khu-vuc-tren-appstore-de-tai-game-ung-dung-o-trung-quoc.html?fbclid=IwY2xjawE-lRJleHRuA2FlbQIxMAABHYyodV3-WEeOVQFwpj6sV9RWkMJV4AoYpf4H2mqDPLelUn7Q1TmCOmNnbQ_aem_CJ3XqROoLyqmFBtIsp4FYQ">Link Hướng dẫn</a>.</p>
+<p>Sau khi cài đặt xong, khoan chuyển về vùng Việt Nam. Cài app Đại Thần (ở dưới)</p>
+<p><a href="https://adl.netease.com/d/g/nshm/c/gw_mumu ">Link tải trên PC</a>.</p>
+                <p>2. Tải app Đại thần - 大神: <a href="https://zhejiang01-bgp-12064.cdn.163fen.com/s/a19.gdl.netease.com/godlike_3.71.2_r86909_1710905506_wyds_dl_webhomepage.apk?ntes_trace_id=47a729f995c9e7a2:47a729f995c9e7a2:0:1">Android</a>   <a href="https://apps.apple.com/cn/app/网易大神-上大神轻松找玩伴/id1359055423">IOS</a>.</p>
+
+		<a href="taotaikhoan/1.png" class="modal-trigger"><img src="taotaikhoan/1.png" alt="" style="width: 100%; height: auto;"></a>
+		<a href="taotaikhoan/2.png" class="modal-trigger"><img src="taotaikhoan/2.png" alt="" style="width: 100%; height: auto;"></a>
+		<a href="taotaikhoan/3.png" class="modal-trigger"><img src="taotaikhoan/3.png" alt="" style="width: 100%; height: auto;"></a>
+
+            </div>
+        </div>
+    </main>
+    
+    <div class="modal" id="modal">
+        <img src="" alt="Full Size Image">
+    </div>
+    
+    <footer>
+        © 2024 Design by Mèo.Đi.Bụi. All rights reserved.
+    </footer>
+    
+    <script>
+        document.querySelectorAll('.modal-trigger').forEach(image => {
+            image.addEventListener('click', (e) => {
+                e.preventDefault();
+                const modal = document.getElementById('modal');
+                const modalImage = modal.querySelector('img');
+                modalImage.src = image.href;
+                modal.classList.add('active');
+            });
+        });
+        
+        document.getElementById('modal').addEventListener('click', () => {
+            document.getElementById('modal').classList.remove('active');
+        });
+    </script>
+</body>
+</html>

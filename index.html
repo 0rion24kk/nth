@@ -76,27 +76,32 @@
         nav ul li a:hover::after, nav ul li a.active::after {
             width: 100%; /* Đưa gạch chân đầy đủ chiều rộng của liên kết khi rê chuột hoặc chọn */
         }
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            background: linear-gradient(135deg, #444, #555);
-            border-radius: 5px;
-            top: 100%;
-            left: 0;
-            min-width: 150px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Tạo hiệu ứng đổ bóng */
-            opacity: 0;
-            transform: translateY(10px); /* Hiệu ứng di chuyển lên khi xuất hiện */
-            transition: opacity 0.3s ease, transform 0.3s ease; /* Hiệu ứng mượt mà */
-            z-index: 1001;
-        }
-        .dropdown-menu li a {
-            padding: 10px 20px;
-            border-radius: 5px; /* Bo góc cho các mục dropdown */
-            text-decoration: none;
-            color: white;
-            display: block;
-        }
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background: linear-gradient(135deg, #444, #555);
+    border-radius: 5px;
+    top: 100%;
+    left: 0;
+    min-width: 150px; /* Đảm bảo menu đủ rộng để chứa nội dung */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1001;
+}
+
+.dropdown-menu li {
+    white-space: nowrap; /* Ngăn không cho nội dung xuống dòng */
+}
+
+.dropdown-menu li a {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    display: block; /* Đảm bảo các mục chiếm toàn bộ chiều rộng của menu */
+}
         .dropdown-menu li a:hover {
             background-color: #555;
         }
@@ -184,21 +189,33 @@
     <header>
         <img src="bg.png" alt="Logo">
     </header>
-        <nav>
-            <ul>
-                <li><a href="#">Trang Chủ</a></li>
-                <li class="dropdown">
-                    <a href="#">Dịch Vụ</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Dịch Vụ 1</a></li>
-                        <li><a href="#">Dịch Vụ 2</a></li>
-                        <li><a href="#">Dịch Vụ 3</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Giới Thiệu</a></li>
-                <li><a href="#">Liên Hệ</a></li>
-            </ul>
-        </nav>
+<nav>
+        <ul>
+            <li><a href="0rion24kk.github.io/nth/">Trang Chủ</a></li>
+	    <li class="dropdown">
+                <a href="#">Nội Công</a>
+                <ul class="dropdown-menu">
+                    <li><a href="index.html">Dịch & So Sánh</a></li>
+		    <li><a href="chi_tiet_noi_cong.html">Chi Tiết Nội Công</a></li>
+		    <li><a href="ynghiacthuoctinh.html">Ý Nghĩa Thuộc Tính</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Nội Công Giang Hồ</a></li>
+            <li><a href="#">Tuyệt Kỹ</a></li>
+            <li><a href="#">Kỹ Năng Giang Hồ</a></li>
+	    <li class="dropdown">
+                <a href="#">Hướng Dẫn</a>
+                <ul class="dropdown-menu">
+                    <li><a href="tri_ky.html">Nhiệm Vụ Tri Kỷ</a></li>
+		    <li><a href="#">Nhiệm Vụ Tình Duyên</a></li>
+		    <li><a href="#">Thử Thách Danh Dự</a></li>
+		    <li><a href="tao_tai_khoan.html">Tạo Tài Khoản</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Thời Trang Free</a></li>
+            <li><a href="#">Liên Hệ</a></li>
+        </ul>
+    </nav>
 <div class="container">
         <div class="table-wrapper">
             <div>
@@ -308,6 +325,6 @@
     <footer>
         © 2024 Design by Mèo.Đi.Bụi. All rights reserved.
     </footer>
-    <script src="script_index.js"></script>
+    <script src="scripts_index.js"></script>
 </body>
 </html>
