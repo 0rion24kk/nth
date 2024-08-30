@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation Tool</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            overflow-x: hidden; /* Loại bỏ thanh cuộn ngang */
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #333, #555);
+            color: white;
+            position: relative; /* Đảm bảo header có vị trí relative để các phần tử con có thể sử dụng z-index */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000; /* Đặt z-index cao để giữ header trên cùng */
+        }
+        header img {
+            width: 150px;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+        header img:hover {
+            transform: scale(1.1);
+        }
+        nav {
+            background: linear-gradient(135deg, #333, #444);
+            color: white;
+            padding: 0;
+            margin: 0;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li {
+            position: relative;
+            transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền */
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            transition: color 0.3s ease; /* Hiệu ứng chuyển màu chữ */
+        }
+        nav ul li a::before {
+            content: url('icon.png'); /* Thay thế bằng URL của biểu tượng */
+            margin-right: 8px;
+        }
+        nav ul li a::after {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 0;
+            bottom: 2px; /* Đặt gạch chân sát chữ */
+            width: 0;
+            height: 2px; /* Độ dày của gạch chân */
+            background-color: #ffd700; /* Màu của gạch chân */
+            transition: width 0.3s ease; /* Hiệu ứng chuyển đổi của gạch chân */
+        }
+        nav ul li a:hover::after, nav ul li a.active::after {
+            width: 100%; /* Đưa gạch chân đầy đủ chiều rộng của liên kết khi rê chuột hoặc chọn */
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background: linear-gradient(135deg, #444, #555);
+            border-radius: 5px;
+            top: 100%;
+            left: 0;
+            min-width: 150px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Tạo hiệu ứng đổ bóng */
+            opacity: 0;
+            transform: translateY(10px); /* Hiệu ứng di chuyển lên khi xuất hiện */
+            transition: opacity 0.3s ease, transform 0.3s ease; /* Hiệu ứng mượt mà */
+            z-index: 1001;
+        }
+        .dropdown-menu li a {
+            padding: 10px 20px;
+            border-radius: 5px; /* Bo góc cho các mục dropdown */
+            text-decoration: none;
+            color: white;
+            display: block;
+        }
+        .dropdown-menu li a:hover {
+            background-color: #555;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            opacity: 1;
+            transform: translateY(0); /* Đưa menu về vị trí gốc */
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            flex-wrap: wrap;
+            position: relative;
+            width: 100vw; /* Đặt width là 100% của viewport */
+            box-sizing: border-box; /* Bao gồm padding và border trong kích thước tổng thể */
+        }
+        .table-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap; /* Đảm bảo các bảng không tràn ra ngoài */
+            width: 100%; /* Đặt width là 100% để phù hợp với container */
+            box-sizing: border-box; /* Bao gồm padding và border trong kích thước tổng thể */
+        }
+        table {
+            width: 100%; /* Đặt width là 100% để phù hợp với container */
+            max-width: 600px; /* Đặt max-width cho bảng để không vượt quá kích thước mong muốn */
+            border-collapse: collapse;
+            margin: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        /* Xóa hiệu ứng hover cho hàng trong bảng */
+        tr:hover {
+            background-color: transparent; /* Hoặc bạn có thể thay đổi thành màu nền khác nếu muốn */
+        }
+        input[type="text"] {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        h2 {
+            text-align: center;
+            margin: 0;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 10px 10px 0 0;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: linear-gradient(135deg, #333, #444);
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            margin-top: 20px;
+        }
+        input[readonly] {
+            cursor: pointer; /* Thay đổi con trỏ chuột khi rê qua các ô nhập liệu */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="bg.png" alt="Logo">
+    </header>
+        <nav>
+            <ul>
+                <li><a href="#">Trang Chủ</a></li>
+                <li class="dropdown">
+                    <a href="#">Dịch Vụ</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Dịch Vụ 1</a></li>
+                        <li><a href="#">Dịch Vụ 2</a></li>
+                        <li><a href="#">Dịch Vụ 3</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Giới Thiệu</a></li>
+                <li><a href="#">Liên Hệ</a></li>
+            </ul>
+        </nav>
+<div class="container">
+        <div class="table-wrapper">
+            <div>
+                <h2>Nội Công Đã Trang Bị</h2>
+                <table>
+                    <tr>
+                        <th>Tiếng Trung</th>
+                        <th>Tiếng Việt</th>
+                        <th>Chỉ Số</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="chinese1"></td>
+                        <td><input type="text" id="translation1" readonly></td>
+                        <td><input type="text" id="number1"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="chinese2"></td>
+                        <td><input type="text" id="translation2" readonly></td>
+                        <td><input type="text" id="number2"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="chinese3"></td>
+                        <td><input type="text" id="translation3" readonly></td>
+                        <td><input type="text" id="number3"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="chinese4"></td>
+                        <td><input type="text" id="translation4" readonly></td>
+                        <td><input type="text" id="number4"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="chinese5"></td>
+                        <td><input type="text" id="translation5" readonly></td>
+                        <td><input type="text" id="number5"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="chinese6"></td>
+                        <td><input type="text" id="translation6" readonly></td>
+                        <td><input type="text" id="number6"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="chinese7"></td>
+                        <td><input type="text" id="translation7" readonly></td>
+                        <td><input type="text" id="number7"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="chinese8"></td>
+                        <td><input type="text" id="translation8" readonly></td>
+                        <td><input type="text" id="number8"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div>
+                <h2>Nội Công Mới</h2>
+                <table>
+                    <tr>
+                        <th>Tiếng Trung</th>
+                        <th>Tiếng Việt</th>
+                        <th>Chỉ Số</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="new_chinese1"></td>
+                        <td><input type="text" id="new_translation1" readonly></td>
+                        <td><input type="text" id="new_number1"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="new_chinese2"></td>
+                        <td><input type="text" id="new_translation2" readonly></td>
+                        <td><input type="text" id="new_number2"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="new_chinese3"></td>
+                        <td><input type="text" id="new_translation3" readonly></td>
+                        <td><input type="text" id="new_number3"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="new_chinese4"></td>
+                        <td><input type="text" id="new_translation4" readonly></td>
+                        <td><input type="text" id="new_number4"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="new_chinese5"></td>
+                        <td><input type="text" id="new_translation5" readonly></td>
+                        <td><input type="text" id="new_number5"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="new_chinese6"></td>
+                        <td><input type="text" id="new_translation6" readonly></td>
+                        <td><input type="text" id="new_number6"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="new_chinese7"></td>
+                        <td><input type="text" id="new_translation7" readonly></td>
+                        <td><input type="text" id="new_number7"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="new_chinese8"></td>
+                        <td><input type="text" id="new_translation8" readonly></td>
+                        <td><input type="text" id="new_number8"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        © 2024 Design by Mèo.Đi.Bụi. All rights reserved.
+    </footer>
+    <script src="script_index.js"></script>
+</body>
+</html>

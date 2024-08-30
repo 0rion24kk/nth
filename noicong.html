@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation Tool</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <style>
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    overflow-x: hidden;
+}
+header {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #333, #555);
+    color: white;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+header img {
+    width: 150px;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+header img:hover {
+    transform: scale(1.1);
+}
+nav {
+    background: linear-gradient(135deg, #333, #444);
+    color: white;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+nav ul li {
+    position: relative;
+    transition: background-color 0.3s ease;
+}
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    transition: color 0.3s ease;
+}
+nav ul li a::before {
+    content: url('icon.png');
+    margin-right: 8px;
+}
+nav ul li a::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 2px;
+    width: 0;
+    height: 2px;
+    background-color: #ffd700;
+    transition: width 0.3s ease;
+}
+nav ul li a:hover::after, nav ul li a.active::after {
+    width: 100%;
+}
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background: linear-gradient(135deg, #444, #555);
+    border-radius: 5px;
+    top: 100%;
+    left: 0;
+    min-width: 150px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1001;
+}
+.dropdown-menu li a {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    display: block;
+}
+.dropdown-menu li a:hover {
+    background-color: #555;
+}
+.dropdown:hover .dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    flex-wrap: wrap;
+    width: 100vw;
+    box-sizing: border-box;
+}
+.table-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 95%; /* Thay đổi độ rộng của bảng */
+    box-sizing: border-box;
+    padding: 0;
+}
+table {
+    width: 100%; /* Chiếm toàn bộ chiều rộng của phần tử cha */
+    border-collapse: collapse;
+    margin: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+th {
+    background-color: #007bff;
+    color: white;
+}
+/* Đặt độ rộng của cột thứ 2 */
+table td:nth-child(2), table th:nth-child(2) {
+    white-space: nowrap; /* Không cho phép xuống dòng */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Hiển thị dấu ba chấm nếu quá dài */
+    width: 200px; /* Điều chỉnh độ rộng tùy theo nhu cầu */
+}
+/* Căn chỉnh chữ bên trái cho cột thứ 3 */
+table td:nth-child(3), table th:nth-child(3) {
+    text-align: left;
+}
+input[type="text"] {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+    transition: border-color 0.3s ease;
+}
+input[type="text"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+h2 {
+    text-align: center;
+    margin: 0;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 10px 10px 0 0;
+}
+footer {
+    text-align: center;
+    padding: 10px;
+    background: linear-gradient(135deg, #333, #444);
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    color: white;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    margin-top: 20px;
+}
+input[readonly] {
+    cursor: pointer;
+}
+.section-header {
+    background-color: red;
+    color: yellow;
+    font-weight: bold;
+    text-align: center;
+    border-top: 2px solid #007bff;
+    border-bottom: 2px solid #007bff;
+}
+.section-header td {
+    padding: 10px;
+    text-align: center;
+}
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <img src="bg.png" alt="Logo">
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#">Trang Chủ</a></li>
+            <li class="dropdown">
+                <a href="#">Dịch Vụ</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Dịch Vụ 1</a></li>
+                    <li><a href="#">Dịch Vụ 2</a></li>
+                    <li><a href="#">Dịch Vụ 3</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Giới Thiệu</a></li>
+            <li><a href="#">Liên Hệ</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="table-wrapper">
+            <table id="data-table">
+                <thead>
+                    <tr>
+                        <th>Hình Ảnh</th>
+                        <th>Tên</th>
+                        <th>Chi Tiết</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dữ liệu sẽ được chèn vào đây -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        © 2024 Design by Mèo.Đi.Bụi. All rights reserved.
+    </footer>
+
+    <!-- JavaScript File -->
+    <script src="data2.js"></script>
+    <script src="script_index2.js"></script>
+</body>
+</html>

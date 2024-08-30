@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            overflow-x: hidden; /* Loại bỏ thanh cuộn ngang */
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+        }
+        header img {
+            width: 150px;
+            border-radius: 50%;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #444;
+            padding: 10px 0;
+            overflow: hidden;
+        }
+        nav a {
+            margin: 0 15px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        nav a::after {
+            content: "";
+            display: block;
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            height: 3px;
+            width: 100%;
+            background-color: #007bff;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            transform-origin: bottom right;
+        }
+        nav a:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+        nav a:hover {
+            color: #f4f4f9;
+            text-decoration: none;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        h2 {
+            text-align: center;
+            margin: 0;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 10px 10px 0 0;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            margin-top: 20px;
+        }
+        td img {
+            max-width: 100%;
+            height: auto;
+        }
+        td {
+            vertical-align: middle;
+            text-align: center;
+        }
+        th {
+            text-align: center;
+            background-color: #007bff;
+            color: white;
+        }
+        .table-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .text-column {
+            text-align: left;
+            word-wrap: break-word;
+            white-space: pre-wrap; /* Đảm bảo xuống dòng cho các đoạn dài và nhận diện \n */
+        }
+        .center-column {
+            text-align: center;
+            white-space: nowrap; /* Ngăn không cho nội dung xuống dòng */
+        }
+        .section-header {
+            background-color: red; /* Màu nền đỏ */
+            color: yellow; /* Màu chữ vàng */
+            font-weight: bold;
+            text-align: center;
+            border-top: 2px solid #007bff;
+            border-bottom: 2px solid #007bff;
+        }
+        .section-header td {
+            padding: 10px;
+            text-align: center;
+        }
+        /* Đảm bảo tất cả phần tử đều tính toán kích thước đúng cách */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="#" alt="Logo">
+    </header>
+
+    <nav>
+        <a href="#">Trang Chủ</a>
+        <a href="#">So Sánh chỉ số</a>
+        <a href="#">Nội công</a>
+        <a href="#">Nội công môn phái</a>
+        <a href="#">Kỹ năng giang hồ</a>
+    </nav>
+
+    <div class="container">
+        <!-- Bảng đầu tiên -->
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>Hình Ảnh</th>
+                    <th>Tên</th>
+                    <th>Chi Tiết</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dữ liệu sẽ được chèn vào đây -->
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        © 2024 Design by Mèo.Đi.Bụi. All rights reserved.
+    </footer>
+
+    <!-- JavaScript File -->
+    <script src="data2.js"></script>
+    <script src="script_index2.js"></script>
+</body>
+</html>
